@@ -6,34 +6,34 @@ use Restserver\Libraries\REST_Controller;
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class Submenu extends REST_Controller
+class Wilayah extends REST_Controller
 {
     public function __construct()
     {
         parent::__construct(); {
-            $this->load->model('Submenu_model', 'submenu');
+            $this->load->model('Wilayah_model', 'wilayah');
             // $this->methods['index_get']['limit'] = 30;
         }
     }
 
     public function index_get()
     {
-        $id = $this->get('MENU_ID_LEVEL2');
-        if ($id === null) {
-            $submenu = $this->submenu->getSubMenu();
+        $kode = $this->get('KODE');
+        if ($kode === null) {
+            $wilayah = $this->wilayah->getWilayah();
         } else {
-            $submenu = $this->submenu->getSubMenu($id);
+            $wilayah = $this->wilayah->getWilayah($kode);
         }
 
-        if ($submenu) {
+        if ($wilayah) {
             $this->response([
                 'status' => true,
-                'data' => $submenu,
+                'data' => $wilayah,
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'id not found',
+                'message' => 'kode not found',
             ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
@@ -41,17 +41,15 @@ class Submenu extends REST_Controller
     public function index_post()
     {
         $data = [
-            'MENU_ID_LEVEL1' => $this->input->post('MENU_ID_LEVEL1'),
-            'MENU_NAME' => $this->input->post('MENU_NAME'),
-            'MENU_CAPTION' => $this->input->post('MENU_CAPTION'),
-            'STATUS' => $this->input->post('STATUS'),
+            'KODE' => $this->input->post('KODE'),
+            'KETERANGAN' => $this->input->post('KETERANGAN'),
         ];
 
-        if ($this->submenu->addSubMenu($data) > 0) {
+        if ($this->wilayah->addWilayah($data) > 0) {
             $this->response([
                 'status' => true,
                 'data' => $data,
-                'message' => 'Submenu baru berhasil ditambah!'
+                'message' => 'wilayah baru berhasil ditambah!'
             ], REST_Controller::HTTP_CREATED);
         } else {
             $this->response([
@@ -63,47 +61,51 @@ class Submenu extends REST_Controller
 
     public function index_put()
     {
-        $id = $this->put('MENU_ID_LEVEL2');
+        $kode = $this->put('KODE');
         $data = [
-            'MENU_NAME' => $this->put('MENU_NAME'),
-            'MENU_ID_LEVEL1' => $this->put('MENU_ID_LEVEL1'),
-            'STATUS' => $this->put('STATUS'),
+            'KETERANGAN' => $this->put('KETERANGAN'),
         ];
-        if ($this->submenu->editSubMenu($data, $id) > 0) {
-            $this->response([
-                'status' => true,
-                'message' => 'Submenu berhasil diedit!'
-            ], REST_Controller::HTTP_OK);
-        } else {
+
+        if ($kode === null) {
             $this->response([
                 'status' => false,
-                'message' => 'failed to edit!',
+                'message' => 'Provide a code!',
             ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if ($this->wilayah->editWilayah($data, $kode)) {
+                $this->response([
+                    'status' => true,
+                    'data' => $data,
+                    'message' => 'wilayah berhasil diedit!'
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'failed to edit!',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
         }
     }
 
     public function index_delete()
     {
-        $id = $this->delete('MENU_ID_LEVEL2');
+        $kode = $this->delete('KODE');
 
-        if ($id === null) {
+        if ($kode === null) {
             $this->response([
                 'status' => false,
-                'message' => 'Provide an id!',
+                'message' => 'Provide a code!',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if ($this->submenu->deleteSubMenu($id) > 0) {
-                # ok
+            if ($this->wilayah->deleteWilayah($kode)) {
                 $this->response([
                     'status' => true,
-                    'id' => $id,
-                    'message' => 'Submenu deleted!'
+                    'message' => 'wilayah ' . $kode . ' deleted!'
                 ], REST_Controller::HTTP_OK);
             } else {
-                # id not found
                 $this->response([
                     'status' => false,
-                    'message' => 'id not found!',
+                    'message' => 'kode not found!',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }

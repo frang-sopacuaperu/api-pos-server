@@ -15,15 +15,8 @@ class Submenu_model extends CI_Model
         }
     }
 
-    public function addSubMenu()
+    public function addSubMenu($data)
     {
-        $data = [
-            'MENU_ID_LEVEL1' => $this->input->post('MENU_ID_LEVEL1'),
-            'MENU_NAME' => $this->input->post('MENU_NAME'),
-            'MENU_CAPTION' => $this->input->post('MENU_CAPTION'),
-            'STATUS' => $this->input->post('STATUS'),
-        ];
-
         $this->db->insert('menu_level2', $data);
         return $this->db->affected_rows();
     }

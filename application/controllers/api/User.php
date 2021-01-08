@@ -64,7 +64,6 @@ class User extends REST_Controller
 
     public function index_post()
     {
-        // $key = $this->get('my_key');
         $key = $this->_generate_key();
 
         $data = [
@@ -95,47 +94,55 @@ class User extends REST_Controller
 
     public function index_put()
     {
-        $id = $this->put('MENU_ID_LEVEL2');
+        $nama = $this->put('NAMA');
         $data = [
-            'MENU_NAME' => $this->put('MENU_NAME'),
-            'MENU_ID_LEVEL1' => $this->put('MENU_ID_LEVEL1'),
-            'STATUS' => $this->put('STATUS'),
+            'PASS' => password_hash($this->input->post('PASS'), PASSWORD_DEFAULT),
+            'ALAMAT' => $this->put('ALAMAT'),
+            'WILAYAH_ID' => $this->put('WILAYAH_ID'),
+            'TELEPON' => $this->put('TELEPON'),
         ];
-        if ($this->user->editUser($data, $id) > 0) {
-            $this->response([
-                'status' => true,
-                'message' => 'user berhasil diedit!'
-            ], REST_Controller::HTTP_OK);
-        } else {
+
+        if ($nama === null) {
             $this->response([
                 'status' => false,
-                'message' => 'failed to edit!',
+                'message' => 'Provide a name!',
             ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if ($this->user->editUser($data, $nama)) {
+                $this->response([
+                    'status' => true,
+                    'data' => $data,
+                    'message' => 'user berhasil diedit!'
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'failed to edit!',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
         }
     }
 
     public function index_delete()
     {
-        $id = $this->delete('MENU_ID_LEVEL2');
+        $nama = $this->delete('NAMA');
 
-        if ($id === null) {
+        if ($nama === null) {
             $this->response([
                 'status' => false,
-                'message' => 'Provide an id!',
+                'message' => 'Provide a name!',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if ($this->user->deleteUser($id) > 0) {
-                # ok
+            if ($this->user->deleteUser($nama)) {
                 $this->response([
                     'status' => true,
-                    'id' => $id,
+                    'nama' => $nama,
                     'message' => 'user deleted!'
                 ], REST_Controller::HTTP_OK);
             } else {
-                # id not found
                 $this->response([
                     'status' => false,
-                    'message' => 'id not found!',
+                    'message' => 'nama not found!',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
