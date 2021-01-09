@@ -18,11 +18,11 @@ class User extends REST_Controller
 
     public function index_get()
     {
-        $id = $this->get('GROUP_HAK_AKSES_ID');
-        if ($id === null) {
+        $nama = $this->get('NAMA');
+        if ($nama === null) {
             $user = $this->user->getUser();
         } else {
-            $user = $this->user->getUser($id);
+            $user = $this->user->getUser($nama);
         }
 
         if ($user) {
@@ -75,7 +75,11 @@ class User extends REST_Controller
             'ALAMAT' => $this->input->post('ALAMAT'),
             'WILAYAH_ID' => $this->input->post('WILAYAH_ID'),
             'TELEPON' => $this->input->post('TELEPON'),
-            'NO_REKENING' => $this->input->post('NO_REKENING')
+            'NO_REKENING' => $this->input->post('NO_REKENING'),
+            'GAJI_POKOK' => $this->input->post('GAJI_POKOK'),
+            'IS_SHOW_INFO_HUTANG_PIUTANG' => $this->input->post('IS_SHOW_INFO_HUTANG_PIUTANG'),
+            'IS_SHOW_PROFIT' => $this->input->post('IS_SHOW_PROFIT'),
+            'IS_ALLOW_UPDATE_PLAFON' => $this->input->post('IS_ALLOW_UPDATE_PLAFON'),
         ];
 
         if ($this->user->addUser($data) > 0) {
@@ -96,10 +100,17 @@ class User extends REST_Controller
     {
         $nama = $this->put('NAMA');
         $data = [
-            'PASS' => password_hash($this->input->post('PASS'), PASSWORD_DEFAULT),
+            'PASS' => password_hash($this->put('PASS'), PASSWORD_DEFAULT),
+            'IS_AKTIF' => $this->put('IS_AKTIF'),
+            'GROUP_HAK_AKSES_ID' => $this->put('GROUP_HAK_AKSES_ID'),
             'ALAMAT' => $this->put('ALAMAT'),
             'WILAYAH_ID' => $this->put('WILAYAH_ID'),
             'TELEPON' => $this->put('TELEPON'),
+            'NO_REKENING' => $this->put('NO_REKENING'),
+            'GAJI_POKOK' => $this->put('GAJI_POKOK'),
+            'IS_SHOW_INFO_HUTANG_PIUTANG' => $this->put('IS_SHOW_INFO_HUTANG_PIUTANG'),
+            'IS_SHOW_PROFIT' => $this->put('IS_SHOW_PROFIT'),
+            'IS_ALLOW_UPDATE_PLAFON' => $this->put('IS_ALLOW_UPDATE_PLAFON'),
         ];
 
         if ($nama === null) {

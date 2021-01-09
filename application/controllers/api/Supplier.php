@@ -6,12 +6,12 @@ use Restserver\Libraries\REST_Controller;
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class Lokasi extends REST_Controller
+class Supplier extends REST_Controller
 {
     public function __construct()
     {
         parent::__construct(); {
-            $this->load->model('Lokasi_model', 'lokasi');
+            $this->load->model('Supplier_model', 'supplier');
             // $this->methods['index_get']['limit'] = 30;
         }
     }
@@ -20,15 +20,15 @@ class Lokasi extends REST_Controller
     {
         $kode = $this->get('KODE');
         if ($kode === null) {
-            $lokasi = $this->lokasi->getLokasi();
+            $supplier = $this->supplier->getSupplier();
         } else {
-            $lokasi = $this->lokasi->getLokasi($kode);
+            $supplier = $this->supplier->getSupplier($kode);
         }
 
-        if ($lokasi) {
+        if ($supplier) {
             $this->response([
                 'status' => true,
-                'data' => $lokasi,
+                'data' => $supplier,
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
@@ -42,15 +42,27 @@ class Lokasi extends REST_Controller
     {
         $data = [
             'KODE' => $this->input->post('KODE'),
-            'KETERANGAN' => $this->input->post('KETERANGAN'),
+            'NAMA' => $this->input->post('NAMA'),
+            'ALAMAT' => $this->input->post('ALAMAT'),
+            'KONTAK' => $this->input->post('KONTAK'),
+            'NPWP' => $this->input->post('NPWP'),
+            'JATUH_TEMPO' => $this->input->post('JATUH_TEMPO'),
+            'URUT' => $this->input->post('URUT'),
+            'WILAYAH_ID' => $this->input->post('WILAYAH_ID'),
             'DEF' => $this->input->post('DEF'),
+            'ALAMAT2' => $this->input->post('ALAMAT2'),
+            'KODE_BARCODE' => $this->input->post('KODE_BARCODE'),
+            'PLAFON_HUTANG' => $this->input->post('PLAFON_HUTANG'),
+            'TOTAL_HUTANG' => $this->input->post('TOTAL_HUTANG'),
+            'TOTAL_PELUNASAN_HUTANG' => $this->input->post('TOTAL_PELUNASAN_HUTANG'),
+            'TELEPON' => $this->input->post('TELEPON'),
         ];
 
-        if ($this->lokasi->addLokasi($data) > 0) {
+        if ($this->supplier->addSupplier($data) > 0) {
             $this->response([
                 'status' => true,
                 'data' => $data,
-                'message' => 'lokasi baru berhasil ditambah!'
+                'message' => 'supplier baru berhasil ditambah!'
             ], REST_Controller::HTTP_CREATED);
         } else {
             $this->response([
@@ -64,8 +76,20 @@ class Lokasi extends REST_Controller
     {
         $kode = $this->put('KODE');
         $data = [
-            'KETERANGAN' => $this->put('KETERANGAN'),
+            'NAMA' => $this->put('NAMA'),
+            'ALAMAT' => $this->put('ALAMAT'),
+            'KONTAK' => $this->put('KONTAK'),
+            'NPWP' => $this->put('NPWP'),
+            'JATUH_TEMPO' => $this->put('JATUH_TEMPO'),
+            'URUT' => $this->put('URUT'),
+            'WILAYAH_ID' => $this->put('WILAYAH_ID'),
             'DEF' => $this->put('DEF'),
+            'ALAMAT2' => $this->put('ALAMAT2'),
+            'KODE_BARCODE' => $this->put('KODE_BARCODE'),
+            'PLAFON_HUTANG' => $this->put('PLAFON_HUTANG'),
+            'TOTAL_HUTANG' => $this->put('TOTAL_HUTANG'),
+            'TOTAL_PELUNASAN_HUTANG' => $this->put('TOTAL_PELUNASAN_HUTANG'),
+            'TELEPON' => $this->put('TELEPON'),
         ];
 
         if ($kode === null) {
@@ -74,11 +98,11 @@ class Lokasi extends REST_Controller
                 'message' => 'Provide a code!',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if ($this->lokasi->editLokasi($data, $kode)) {
+            if ($this->supplier->editSupplier($data, $kode)) {
                 $this->response([
                     'status' => true,
                     'data' => $data,
-                    'message' => 'lokasi berhasil diedit!'
+                    'message' => 'supplier berhasil diedit!'
                 ], REST_Controller::HTTP_OK);
             } else {
                 $this->response([
@@ -99,10 +123,10 @@ class Lokasi extends REST_Controller
                 'message' => 'Provide a code!',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if ($this->lokasi->deleteLokasi($kode)) {
+            if ($this->supplier->deleteSupplier($kode)) {
                 $this->response([
                     'status' => true,
-                    'message' => 'lokasi ' . $kode . ' deleted!'
+                    'message' => 'supplier ' . $kode . ' deleted!'
                 ], REST_Controller::HTTP_OK);
             } else {
                 $this->response([
