@@ -211,31 +211,7 @@ $config['auth_library_function'] = '';
 | Array of usernames and passwords for login, if ldap is configured this is ignored
 |
 */
-
-
-
-// PAK SAM INI KALAU MAU AMBIL DATA DARI TABLE USER_ADMIN DI DATABASE SCRIPTNYA GINI BENER GAK UNTUK LOGINNYA JADI
-// DATANYA GAK MANUAL KAYAK YANG BAWAAN ASLI PAK?
-
-// $CI = &get_instance();
-
-// // $nama = $CI->input->post('NAMA');
-// // $pass = $CI->input->post('PASS');
-
-// $user = $CI->db->get_where('user_admin', [
-//   'NAMA' => $CI->input->post('NAMA'),
-//   'PASS' => $CI->input->post('PASS'),
-// ])->row_array();
-
-// $config['rest_valid_logins'] = [
-//   $user['NAMA'],
-//   $user['PASS'],
-// ];
-
-
-
 $config['rest_valid_logins'] = ['admin' => '1234'];
-
 /*
 |--------------------------------------------------------------------------
 | Global IP White-listing
