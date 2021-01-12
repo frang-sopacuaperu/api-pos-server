@@ -334,7 +334,7 @@ $config['rest_enable_keys'] = false;
 | column name to match e.g. my_key
 |
 */
-$config['rest_key_column'] = 'my_key';
+$config['rest_key_column'] = 'MY_KEY';
 
 /*
 |--------------------------------------------------------------------------
