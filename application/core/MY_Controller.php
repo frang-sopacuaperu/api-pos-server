@@ -6,30 +6,19 @@ use Restserver\Libraries\REST_Controller;
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class AUTH_Controller extends REST_Controller
+class MY_Controller extends REST_Controller
 {
 
-    private function is_logged_in()
+    public function is_logged_in()
     {
-        if (!$this->session->userdata('NAMA')) {
+        $nama = $this->input->post('NAMA');
+        if (!$nama) {
             $this->response([
                 'status' => false,
                 'message' => 'login first!',
             ], REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $GROUP_HAK_AKSES_ID = $this->session->userdata('GROUP_HAK_AKSES_ID');
-            $menu2 = $this->uri->segment(1);
-
-            $queryMenu2 = $this->db->get_where('menu_level2', ['MENU_CAPTION' => $menu2])->row_array();
-
-            $menu2_id = $queryMenu2['MENU_ID_LEVEL2'];
-
-            $userAccess = $this->db->get_where('hak_akses_form', [
-                'ID' => $GROUP_HAK_AKSES_ID,
-                'AKSES' => $menu2_id
-            ]);
-
-            if ($userAccess->num_rows() < 1) {
+            if ($nama !== $nama) {
                 $this->response([
                     'status' => false,
                     'message' => 'blocked!',
@@ -38,13 +27,13 @@ class AUTH_Controller extends REST_Controller
         }
     }
 
-    public function login()
+    public function login_post()
     {
         $this->is_logged_in();
         $this->_login();
     }
 
-    private function _token_exp()
+    public function _token_exp()
     {
         session_start();
 
@@ -52,7 +41,7 @@ class AUTH_Controller extends REST_Controller
         $_SESSION['expires_by'] = time() + $timeout;
     }
 
-    private function _generate_key()
+    public function _generate_key()
     {
         do {
             // Generate a random salt
@@ -69,14 +58,14 @@ class AUTH_Controller extends REST_Controller
         return $new_key;
     }
 
-    private function _key_exists($key)
+    public function _key_exists($key)
     {
         return $this->rest->db
             ->where(config_item('rest_key_column'), $key)
             ->count_all_results(config_item('rest_keys_table')) > 0;
     }
 
-    private function _login()
+    public function _login()
     {
         $nama = $this->input->post('NAMA');
         $pass = $this->input->post('PASS');
@@ -104,12 +93,12 @@ class AUTH_Controller extends REST_Controller
                             'NAMA' => $user['NAMA'],
                             'GROUP_HAK_AKSES_ID' => $user['GROUP_HAK_AKSES_ID']
                         ];
-                        $this->session->set_userdata($data);
                         $this->response([
                             'status' => true,
                             'data' => $user,
                             'message' => 'Berhasil, anda sudah login!',
                         ], REST_Controller::HTTP_OK);
+                        $this->db->get_where('barang')->result_array();
                     } else {
                         $this->response([
                             'status' => false,
@@ -139,7 +128,6 @@ class AUTH_Controller extends REST_Controller
                     'message' => 'Token masih aktif!',
                 ], REST_Controller::HTTP_OK);
             } else {
-                session_destroy();
                 $data = [
                     'my_key' => $key,
                 ];

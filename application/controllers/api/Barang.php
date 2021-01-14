@@ -3,17 +3,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 use Restserver\Libraries\REST_Controller;
 
-require APPPATH . 'core/AUTH_Controller.php';
-
-class Barang extends AUTH_Controller
+class Barang extends MY_Controller
 {
-
-
     public function __construct()
     {
         parent::__construct(); {
             $this->load->model('Barang_model', 'barang');
             // $this->methods['index_get']['limit'] = 30;
+            $this->is_logged_in();
         }
     }
 
@@ -41,6 +38,7 @@ class Barang extends AUTH_Controller
 
     public function index_post()
     {
+        $this->login_post();
         $data = [
             'KODE' => $this->input->post('KODE'),
             'NAMA' => $this->input->post('NAMA'),
