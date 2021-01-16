@@ -18,9 +18,9 @@ class Auth_model extends CI_Model
         $query = $this->db->get_where('user_admin')->result_array();
 
         if ($query > 0) {
-            $result = $this->db->get('user_admin', ['NAMA' => $nama])->row_array();
+            $result = $this->db->get_where('user_admin', ['NAMA' => $nama])->row_array();
         } else {
-            $query;
+            $result = array();
         }
         return $result;
     }
