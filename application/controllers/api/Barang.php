@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use Restserver\Libraries\REST_Controller;
 use \Firebase\JWT\JWT;
 
 class Barang extends MY_Controller
@@ -40,16 +39,15 @@ class Barang extends MY_Controller
                         $this->response([
                             'status' => true,
                             'data' => $barang,
-                        ], REST_Controller::HTTP_OK);
+                        ], 200);
                     } else {
                         $this->response([
                             'status' => false,
                             'message' => 'kode not found',
-                        ], REST_Controller::HTTP_NOT_FOUND);
+                        ], 404);
                     }
                 }
             } catch (\Exception $e) {
-                //throw $th;
                 $output = [
                     'message' => 'Access denied',
                     "error" => $e->getMessage()
@@ -118,16 +116,15 @@ class Barang extends MY_Controller
                             'status' => true,
                             'data' => $data,
                             'message' => 'barang baru berhasil ditambah!'
-                        ], REST_Controller::HTTP_CREATED);
+                        ], 201);
                     } else {
                         $this->response([
                             'status' => false,
                             'message' => 'failed to create new data!',
-                        ], REST_Controller::HTTP_BAD_REQUEST);
+                        ], 400);
                     }
                 }
             } catch (\Exception $e) {
-                //throw $th;
                 $output = [
                     'message' => 'Access denied',
                     "error" => $e->getMessage()
@@ -195,24 +192,23 @@ class Barang extends MY_Controller
                         $this->response([
                             'status' => false,
                             'message' => 'Provide a code!',
-                        ], REST_Controller::HTTP_BAD_REQUEST);
+                        ], 400);
                     } else {
                         if ($this->barang->editBarang($data, $kode)) {
                             $this->response([
                                 'status' => true,
                                 'data' => $data,
                                 'message' => 'barang berhasil diedit!'
-                            ], REST_Controller::HTTP_OK);
+                            ], 200);
                         } else {
                             $this->response([
                                 'status' => false,
                                 'message' => 'failed to edit!',
-                            ], REST_Controller::HTTP_BAD_REQUEST);
+                            ], 400);
                         }
                     }
                 }
             } catch (\Exception $e) {
-                //throw $th;
                 $output = [
                     'message' => 'Access denied',
                     "error" => $e->getMessage()
@@ -245,29 +241,28 @@ class Barang extends MY_Controller
                         $this->response([
                             'status' => false,
                             'message' => 'Provide a code!',
-                        ], REST_Controller::HTTP_BAD_REQUEST);
+                        ], 400);
                     } else {
                         if ($this->barang->deleteBarang($kode)) {
                             $this->response([
                                 'status' => true,
                                 'message' => 'barang ' . $kode . ' deleted!'
-                            ], REST_Controller::HTTP_OK);
+                            ], 200);
                         } else {
                             $this->response([
                                 'status' => false,
                                 'message' => 'kode not found!',
-                            ], REST_Controller::HTTP_BAD_REQUEST);
+                            ], 400);
                         }
                     }
                 }
             } catch (\Exception $e) {
-                //throw $th;
                 $output = [
                     'message' => 'Access denied',
                     "error" => $e->getMessage()
                 ];
 
-                return $this->response($output, 401);
+                return $this->response($output, 403);
             }
         }
     }

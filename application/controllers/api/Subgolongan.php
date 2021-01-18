@@ -1,112 +1,204 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use Restserver\Libraries\REST_Controller;
+use \Firebase\JWT\JWT;
 
-require APPPATH . 'libraries/REST_Controller.php';
-require APPPATH . 'libraries/Format.php';
-
-class SubGolongan extends REST_Controller
+class SubGolongan extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct(); {
             $this->load->model('SubGolongan_model', 'subgolongan');
-            // $this->methods['index_get']['limit'] = 30;
         }
     }
 
     public function index_get()
     {
-        $kode = $this->get('KODE');
-        if ($kode === null) {
-            $subgolongan = $this->subgolongan->getSubGolongan();
-        } else {
-            $subgolongan = $this->subgolongan->getSubGolongan($kode);
-        }
+        $secret_key = $this->privateKey();
+        $token = null;
 
-        if ($subgolongan) {
-            $this->response([
-                'status' => true,
-                'data' => $subgolongan,
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'kode not found',
-            ], REST_Controller::HTTP_NOT_FOUND);
+        $authHeader = $this->input->get_request_header('Authorization');
+
+        $arr = explode(" ", $authHeader);
+
+        $token = $arr[1];
+
+        if ($token) {
+            try {
+                $decoded = JWT::decode($token, $secret_key, array('HS256'));
+
+                if ($decoded) {
+                    $kode = $this->get('KODE');
+                    if ($kode === null) {
+                        $subgolongan = $this->subgolongan->getSubGolongan();
+                    } else {
+                        $subgolongan = $this->subgolongan->getSubGolongan($kode);
+                    }
+
+                    if ($subgolongan) {
+                        $this->response([
+                            'status' => true,
+                            'data' => $subgolongan,
+                        ], 200);
+                    } else {
+                        $this->response([
+                            'status' => false,
+                            'message' => 'kode not found',
+                        ], 404);
+                    }
+                }
+            } catch (\Exception $e) {
+                $output = [
+                    'message' => 'Access denied',
+                    "error" => $e->getMessage()
+                ];
+
+                return $this->response($output, 401);
+            }
         }
     }
 
     public function index_post()
     {
-        $data = [
-            'KODE' => $this->input->post('KODE'),
-            'KETERANGAN' => $this->input->post('KETERANGAN'),
-        ];
+        $secret_key = $this->privateKey();
+        $token = null;
 
-        if ($this->subgolongan->addSubGolongan($data) > 0) {
-            $this->response([
-                'status' => true,
-                'data' => $data,
-                'message' => 'subgolongan baru berhasil ditambah!'
-            ], REST_Controller::HTTP_CREATED);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'failed to create new data!',
-            ], REST_Controller::HTTP_BAD_REQUEST);
+        $authHeader = $this->input->get_request_header('Authorization');
+
+        $arr = explode(" ", $authHeader);
+
+        $token = $arr[1];
+
+        if ($token) {
+            try {
+                $decoded = JWT::decode($token, $secret_key, array('HS256'));
+
+                if ($decoded) {
+                    $data = [
+                        'KODE' => $this->input->post('KODE'),
+                        'KETERANGAN' => $this->input->post('KETERANGAN'),
+                    ];
+
+                    if ($this->subgolongan->addSubGolongan($data) > 0) {
+                        $this->response([
+                            'status' => true,
+                            'data' => $data,
+                            'message' => 'subgolongan baru berhasil ditambah!'
+                        ], 201);
+                    } else {
+                        $this->response([
+                            'status' => false,
+                            'message' => 'failed to create new data!',
+                        ], 400);
+                    }
+                }
+            } catch (\Exception $e) {
+                $output = [
+                    'message' => 'Access denied',
+                    "error" => $e->getMessage()
+                ];
+
+                return $this->response($output, 401);
+            }
         }
     }
 
     public function index_put()
     {
-        $kode = $this->put('KODE');
-        $data = [
-            'KETERANGAN' => $this->put('KETERANGAN'),
-        ];
+        $secret_key = $this->privateKey();
+        $token = null;
 
-        if ($kode === null) {
-            $this->response([
-                'status' => false,
-                'message' => 'Provide a code!',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        } else {
-            if ($this->subgolongan->editSubGolongan($data, $kode)) {
-                $this->response([
-                    'status' => true,
-                    'data' => $data,
-                    'message' => 'subgolongan ' . $kode . ' berhasil diedit!'
-                ], REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'failed to edit!',
-                ], REST_Controller::HTTP_BAD_REQUEST);
+        $authHeader = $this->input->get_request_header('Authorization');
+
+        $arr = explode(" ", $authHeader);
+
+        $token = $arr[1];
+
+        if ($token) {
+            try {
+                $decoded = JWT::decode($token, $secret_key, array('HS256'));
+
+                if ($decoded) {
+                    $kode = $this->put('KODE');
+                    $data = [
+                        'KETERANGAN' => $this->put('KETERANGAN'),
+                    ];
+
+                    if ($kode === null) {
+                        $this->response([
+                            'status' => false,
+                            'message' => 'Provide a code!',
+                        ], 400);
+                    } else {
+                        if ($this->subgolongan->editSubGolongan($data, $kode)) {
+                            $this->response([
+                                'status' => true,
+                                'data' => $data,
+                                'message' => 'subgolongan ' . $kode . ' berhasil diedit!'
+                            ], 200);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'failed to edit!',
+                            ], 400);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $output = [
+                    'message' => 'Access denied',
+                    "error" => $e->getMessage()
+                ];
+
+                return $this->response($output, 401);
             }
         }
     }
 
     public function index_delete()
     {
-        $kode = $this->delete('KODE');
+        $secret_key = $this->privateKey();
+        $token = null;
 
-        if ($kode === null) {
-            $this->response([
-                'status' => false,
-                'message' => 'Provide a code!',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        } else {
-            if ($this->subgolongan->deleteSubGolongan($kode)) {
-                $this->response([
-                    'status' => true,
-                    'message' => 'subgolongan ' . $kode . ' deleted!'
-                ], REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'kode not found!',
-                ], REST_Controller::HTTP_BAD_REQUEST);
+        $authHeader = $this->input->get_request_header('Authorization');
+
+        $arr = explode(" ", $authHeader);
+
+        $token = $arr[1];
+
+        if ($token) {
+            try {
+                $decoded = JWT::decode($token, $secret_key, array('HS256'));
+
+                if ($decoded) {
+                    $kode = $this->delete('KODE');
+
+                    if ($kode === null) {
+                        $this->response([
+                            'status' => false,
+                            'message' => 'Provide a code!',
+                        ], 400);
+                    } else {
+                        if ($this->subgolongan->deleteSubGolongan($kode)) {
+                            $this->response([
+                                'status' => true,
+                                'message' => 'subgolongan ' . $kode . ' deleted!'
+                            ], 200);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'kode not found!',
+                            ], 400);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $output = [
+                    'message' => 'Access denied',
+                    "error" => $e->getMessage()
+                ];
+
+                return $this->response($output, 401);
             }
         }
     }

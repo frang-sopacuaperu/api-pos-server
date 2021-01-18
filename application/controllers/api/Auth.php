@@ -36,7 +36,7 @@ class Auth extends MY_Controller
             $this->response([
                 'status' => true,
                 'data' => $data,
-                'message' => 'registrasi berhasil!'
+                'message' => 'registrasi berhasil, tolong catat MY_KEY anda sebagai API_KEY untuk mengakses menu!'
             ], REST_Controller::HTTP_CREATED);
         } else {
             $this->response([
