@@ -10,22 +10,146 @@ require_once APPPATH . '/libraries/BeforeValidException.php';
 require_once APPPATH . '/libraries/ExpiredException.php';
 require_once APPPATH . '/libraries/SignatureInvalidException.php';
 
+use \Firebase\JWT\JWT;
+
+
 
 class MY_Controller extends REST_Controller
 {
-    // function __construct()
-    // {
-    //     parent::__construct();
-    //     $this->lang->load('my_lang');
-    //     $token = $this->input->get_request_header('Authorization');
-    //     $expired_at = explode('.', $token[1]);
-    //     if ($expired_at < strtotime(time())) {
-    //         $this->response([
-    //             'status' => false,
-    //             'message' => 'login first!',
-    //         ], REST_Controller::HTTP_NOT_FOUND);
-    //     }
-    // }
+    function __construct()
+    {
+        parent::__construct();
+        $this->lang->load('my_lang');
+        // $token = $this->input->get_request_header('Authorization');
+        // $expired_at = explode('.', $token[1]);
+        // if ($expired_at < strtotime(time())) {
+        //     $this->response([
+        //         'status' => false,
+        //         'message' => 'login first!',
+        //     ], REST_Controller::HTTP_NOT_FOUND);
+        // }
+        $token = null;
+
+        $token = $this->input->get_request_header('Authorization');
+
+        $exp = explode(" ", $token[1]);
+
+        if ($exp == false) {
+            $output = [
+                'message' => 'Access denied',
+            ];
+
+            return $this->response($output, 401);
+        }
+    }
+
+    public function cek_login($nama)
+    {
+        $query = $this->db->get_where('user_admin')->result_array();
+
+        if ($query > 0) {
+            $result = $this->db->get_where('user_admin', ['NAMA' => $nama])->row_array();
+        } else {
+            $result = array();
+        }
+        return $result;
+    }
+
+    public function login_post()
+    {
+
+        $nama = $this->input->post('NAMA');
+        $pass = $this->input->post('PASS');
+
+        $cek_login = $this->cek_login($nama);
+
+        $user = $this->db->get_where('user_admin', [
+            'NAMA' => $nama
+        ])->row_array();
+
+        if ($user) {
+            if ($user['IS_AKTIF'] == 1) {
+
+                if (password_verify($pass, $cek_login['PASS'])) {
+                    # code...
+                    $secret_key = $this->privateKey();
+                    $issuer_claim = "THE_CLAIM"; // this can be the servername. Example: https://domain.com
+                    $audience_claim = "THE_AUDIENCE";
+                    $issuedat_claim = time(); // issued at
+                    $notbefore_claim = $issuedat_claim + 10; //not before in seconds
+                    $expire_claim = $issuedat_claim + 3600; // expire time in seconds
+                    $token = array(
+                        "iss" => $issuer_claim,
+                        "aud" => $audience_claim,
+                        "iat" => $issuedat_claim,
+                        "nbf" => $notbefore_claim,
+                        "exp" => $expire_claim,
+                        "data" => array(
+                            "NAMA" => $cek_login['NAMA'],
+                            "MY_KEY" => $cek_login['MY_KEY'],
+                            "IS_AKTIF" => $cek_login['IS_AKTIF'],
+                            "GROUP_HAK_AKSES_ID" => $cek_login['GROUP_HAK_AKSES_ID'],
+                            "ALAMAT" => $cek_login['ALAMAT'],
+                            "WILAYAH_ID" => $cek_login['WILAYAH_ID'],
+                            "TELEPON" => $cek_login['TELEPON'],
+                            "NO_REKENING" => $cek_login['NO_REKENING'],
+                            "GAJI_POKOK" => $cek_login['GAJI_POKOK'],
+                            "IS_SHOW_INFO_HUTANG_PIUTANG" => $cek_login['IS_SHOW_INFO_HUTANG_PIUTANG'],
+                            "IS_SHOW_PROFIT" => $cek_login['IS_SHOW_PROFIT'],
+                            "IS_ALLOW_UPDATE_PLAFON" => $cek_login['IS_ALLOW_UPDATE_PLAFON'],
+                        )
+                    );
+                    $token = JWT::encode($token, $secret_key);
+
+                    $output = [
+                        'status' => 200,
+                        'message' => 'sukses login',
+                        'token' => $token,
+                        'nama' => $nama,
+                        'expired-at' => $expire_claim
+                    ];
+                    return $this->response($output, 200);
+                }
+                if ($pass == null) {
+                    $output = [
+                        'status' => 401,
+                        'message' => 'password tidak boleh kosong!',
+                        'nama' => $nama,
+                    ];
+                    return $this->response($output, 400);
+                } else {
+                    $output = [
+                        'status' => 401,
+                        'message' => 'password salah!',
+                        'nama' => $nama,
+                    ];
+                    return $this->response($output, 401);
+                }
+            } else {
+                $output = [
+                    'status' => 401,
+                    'message' => 'user ini tidak aktif/ di-non-aktifkan, hubungi admin!',
+                    'nama' => $nama,
+                ];
+                return $this->response($output, 403);
+            }
+        }
+        if ($nama == null) {
+            $output = [
+                'status' => 401,
+                'message' => 'nama tidak boleh kosong!',
+                'nama' => $nama,
+            ];
+            return $this->response($output, 400);
+        } else {
+            $output = [
+                'status' => 401,
+                'message' => 'user ini tidak terdaftar!',
+                'nama' => $nama,
+            ];
+            return $this->response($output, 403);
+        }
+    }
 
     public function privateKey()
     {
