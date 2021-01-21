@@ -100,6 +100,109 @@ class MY_Controller extends REST_Controller
             ->count_all_results(config_item('rest_keys_table')) > 0;
     }
 
+    // public function is_logged_in()
+    // {
+    //     $nama = $this->input->post('NAMA');
+    //     if (!$nama) {
+    //         $this->response([
+    //             'status' => false,
+    //             'message' => $this->lang->line('login'),
+    //         ], REST_Controller::HTTP_NOT_FOUND);
+    //     } else {
+    //         if ($nama !== $nama) {
+    //             $this->response([
+    //                 'status' => false,
+    //                 'message' => 'blocked!',
+    //             ], REST_Controller::HTTP_NOT_FOUND);
+    //         }
+    //     }
+    // }
+
+    // public function login_post()
+    // {
+    //     $this->is_logged_in();
+    //     $this->_login();
+    // }
+
+    // public function _token_exp()
+    // {
+    //     session_start();
+
+    //     $timeout = 3600;
+    //     $_SESSION['expires_by'] = time() + $timeout;
+    // }
+
+    // public function _login()
+    // {
+    //     $nama = $this->input->post('NAMA');
+    //     $pass = $this->input->post('PASS');
+    //     $data = array();
+    //     $is_verified = false;
+
+    //     $user = $this->db->get_where('user_admin', [
+    //         'NAMA' => $nama
+    //     ])->row_array();
+
+    //     if ($user === null) {
+    //         $this->response([
+    //             'status' => false,
+    //             'message' => 'Invalid Credentials!',
+    //         ], 400);
+    //     }
+    //     if ($pass === null) {
+    //         $this->response([
+    //             'status' => false,
+    //             'message' => 'Invalid Credentials!',
+    //         ], 400);
+    //     } else {
+    //         if ($user) {
+    //             if ($user['IS_AKTIF'] == 1) {
+    //                 if (password_verify($pass, $user['PASS'])) {
+    //                     $data = [
+    //                         'NAMA' => $user['NAMA'],
+    //                         'GROUP_HAK_AKSES_ID' => $user['GROUP_HAK_AKSES_ID']
+    //                     ];
+    //                     unset($user['PASS']);
+    //                     unset($user['MY_KEY']);
+
+    //                     $is_verified = true;
+    //                 }
+    //             }
+    //         }
+
+    //         if ($is_verified) {
+    //             $expired_time = strtotime("+30 minutes");
+    //             $key = $this->_generate_key();
+
+    //             if (time() < $expired_time) {
+
+    //                 $this->response([
+    //                     'status' => true,
+    //                     'user' => $user,
+    //                     'token' => $key,
+    //                     'message' => 'Token masih aktif!',
+    //                 ], REST_Controller::HTTP_OK);
+    //             } else {
+    //                 $data = [
+    //                     'my_key' => $key,
+    //                 ];
+    //                 $this->db->insert('user_admin', $data);
+    //                 $this->db->affected_rows();
+    //                 $this->response([
+    //                     'status' => true,
+    //                     'token' => $key,
+    //                     'message' => 'Token baru berhasil dibuat!',
+    //                 ], REST_Controller::HTTP_OK);
+    //             }
+    //         } else {
+    //             $this->response([
+    //                 'status' => false,
+    //                 'message' => 'invalid credentials!',
+    //             ], 401);
+    //         }
+    //     }
+    // }
+
     // private function generate_api_token()
     // {
     //     $length = '30';
