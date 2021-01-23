@@ -18,14 +18,7 @@ class MY_Controller extends REST_Controller
     {
         parent::__construct();
         $this->lang->load('my_lang');
-        // $token = $this->input->get_request_header('Authorization');
-        // $expired_at = explode('.', $token[1]);
-        // if ($expired_at < strtotime(time())) {
-        //     $this->response([
-        //         'status' => false,
-        //         'message' => 'login first!',
-        //     ], REST_Controller::HTTP_NOT_FOUND);
-        // }
+
         $token = null;
         $secret_key = $this->privateKey();
 
@@ -36,7 +29,7 @@ class MY_Controller extends REST_Controller
             $decoded = JWT::decode($token, $secret_key, array('HS256'));
             if ($decoded && $decoded->exp < time()) {
                 $output = [
-                    'message' => 'Unauthorized!',
+                    'message' => $this->lang->line('unauth'),
                     'status' => 401,
                 ];
 
@@ -44,7 +37,7 @@ class MY_Controller extends REST_Controller
             }
         } catch (\Exception $e) {
             $output = [
-                'message' => 'Access denied',
+                'message' => $this->lang->line('deny'),
                 "error" => $e->getMessage()
             ];
 
@@ -72,32 +65,6 @@ class MY_Controller extends REST_Controller
             -----END RSA PRIVATE KEY-----
             EOD;
         return $privateKey;
-    }
-
-    public function _generate_key()
-    {
-        do {
-            // Generate a random salt
-            $salt = base_convert(bin2hex($this->security->get_random_bytes(64)), 16, 36);
-
-            // If an error occurred, then fall back to the previous method
-            if ($salt === FALSE) {
-                $salt = hash('sha256', time() . mt_rand());
-            }
-
-            $new_key = substr($salt, 0, config_item('rest_key_length'));
-            $time = strtotime("+1 minutes");
-            $new_key .= '.' . $time;
-        } while ($this->_key_exists($new_key));
-
-        return $new_key;
-    }
-
-    public function _key_exists($key)
-    {
-        return $this->rest->db
-            ->where(config_item('rest_key_column'), $key)
-            ->count_all_results(config_item('rest_keys_table')) > 0;
     }
 
     // private function generate_api_token()

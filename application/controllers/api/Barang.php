@@ -1,8 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use \Firebase\JWT\JWT;
-
 class Barang extends MY_Controller
 {
     public function __construct()
@@ -29,7 +27,7 @@ class Barang extends MY_Controller
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'kode not found',
+                'message' => $this->lang->line('id'),
             ], 404);
         }
     }
@@ -77,12 +75,12 @@ class Barang extends MY_Controller
             $this->response([
                 'status' => true,
                 'data' => $data,
-                'message' => 'barang baru berhasil ditambah!'
+                'message' => $this->lang->line('post')
             ], 201);
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'failed to create new data!',
+                'message' => $this->lang->line('fail'),
             ], 400);
         }
     }
@@ -129,19 +127,19 @@ class Barang extends MY_Controller
         if ($kode === null) {
             $this->response([
                 'status' => false,
-                'message' => 'Provide a code!',
+                'message' => $this->lang->line('null'),
             ], 400);
         } else {
             if ($this->barang->editBarang($data, $kode)) {
                 $this->response([
                     'status' => true,
                     'data' => $data,
-                    'message' => 'barang berhasil diedit!'
+                    'message' => $this->lang->line('put')
                 ], 200);
             } else {
                 $this->response([
                     'status' => false,
-                    'message' => 'failed to edit!',
+                    'message' => $this->lang->line('fail-put'),
                 ], 400);
             }
         }
@@ -154,18 +152,18 @@ class Barang extends MY_Controller
         if ($kode === null) {
             $this->response([
                 'status' => false,
-                'message' => 'Provide a code!',
+                'message' => $this->lang->line('null'),
             ], 400);
         } else {
             if ($this->barang->deleteBarang($kode)) {
                 $this->response([
                     'status' => true,
-                    'message' => 'barang ' . $kode . ' deleted!'
+                    'message' => $this->lang->line('delete')
                 ], 200);
             } else {
                 $this->response([
                     'status' => false,
-                    'message' => 'kode not found!',
+                    'message' => $this->lang->line('id'),
                 ], 400);
             }
         }

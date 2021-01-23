@@ -10,6 +10,7 @@ class Auth extends REST_Controller
     {
         parent::__construct(); {
             $this->load->model('Auth_model', 'auth');
+            $this->lang->load('my_lang');
         }
     }
 
@@ -35,39 +36,12 @@ class Auth extends REST_Controller
         return $privateKey;
     }
 
-    public function _generate_key()
-    {
-        do {
-            // Generate a random salt
-            $salt = base_convert(bin2hex($this->security->get_random_bytes(64)), 16, 36);
-
-            // If an error occurred, then fall back to the previous method
-            if ($salt === FALSE) {
-                $salt = hash('sha256', time() . mt_rand());
-            }
-
-            $new_key = substr($salt, 0, config_item('rest_key_length'));
-            $time = strtotime("+1 minutes");
-            $new_key .= '.' . $time;
-        } while ($this->_key_exists($new_key));
-
-        return $new_key;
-    }
-
-    public function _key_exists($key)
-    {
-        return $this->rest->db
-            ->where(config_item('rest_key_column'), $key)
-            ->count_all_results(config_item('rest_keys_table')) > 0;
-    }
-
     public function register_post()
     {
 
         $data = [
             'NAMA' => $this->input->post('NAMA'),
             'PASS' => password_hash($this->input->post('PASS'), PASSWORD_DEFAULT),
-            'MY_KEY' => $this->_generate_key(),
             'IS_AKTIF' => 1,
             'GROUP_HAK_AKSES_ID' => 2,
             'ALAMAT' => $this->input->post('ALAMAT'),
@@ -84,12 +58,12 @@ class Auth extends REST_Controller
             $this->response([
                 'status' => true,
                 'data' => $data,
-                'message' => 'registrasi berhasil, tolong catat MY_KEY anda sebagai API_KEY untuk mengakses menu!'
+                'message' => $this->lang->line('post')
             ], REST_Controller::HTTP_CREATED);
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'failed to register!',
+                'message' => $this->lang->line('fail'),
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
@@ -127,7 +101,6 @@ class Auth extends REST_Controller
                         "exp" => $expire_claim,
                         "data" => array(
                             "NAMA" => $cek_login['NAMA'],
-                            "MY_KEY" => $cek_login['MY_KEY'],
                             "IS_AKTIF" => $cek_login['IS_AKTIF'],
                             "GROUP_HAK_AKSES_ID" => $cek_login['GROUP_HAK_AKSES_ID'],
                             "ALAMAT" => $cek_login['ALAMAT'],
@@ -144,7 +117,7 @@ class Auth extends REST_Controller
 
                     $output = [
                         'status' => 200,
-                        'message' => 'sukses login',
+                        'message' => $this->lang->line('success'),
                         'token' => $token,
                         'nama' => $nama,
                         'expired-at' => $expire_claim
@@ -154,14 +127,14 @@ class Auth extends REST_Controller
                 if ($pass == null) {
                     $output = [
                         'status' => 401,
-                        'message' => 'password tidak boleh kosong!',
+                        'message' => $this->lang->line('wrong'),
                         'nama' => $nama,
                     ];
                     return $this->response($output, 400);
                 } else {
                     $output = [
                         'status' => 401,
-                        'message' => 'password salah!',
+                        'message' => $this->lang->line('wrong'),
                         'nama' => $nama,
                     ];
                     return $this->response($output, 401);
@@ -169,7 +142,7 @@ class Auth extends REST_Controller
             } else {
                 $output = [
                     'status' => 401,
-                    'message' => 'user ini tidak aktif/ di-non-aktifkan, hubungi admin!',
+                    'message' => $this->lang->line('wrong'),
                     'nama' => $nama,
                 ];
                 return $this->response($output, 403);
@@ -178,14 +151,14 @@ class Auth extends REST_Controller
         if ($nama == null) {
             $output = [
                 'status' => 401,
-                'message' => 'nama tidak boleh kosong!',
+                'message' => $this->lang->line('wrong'),
                 'nama' => $nama,
             ];
             return $this->response($output, 400);
         } else {
             $output = [
                 'status' => 401,
-                'message' => 'user ini tidak terdaftar!',
+                'message' => $this->lang->line('wrong'),
                 'nama' => $nama,
             ];
             return $this->response($output, 403);

@@ -323,7 +323,7 @@ $config['rest_keys_table'] = 'user_admin';
 |   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_keys'] = true;
+$config['rest_enable_keys'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -334,7 +334,7 @@ $config['rest_enable_keys'] = true;
 | column name to match e.g. my_key
 |
 */
-$config['rest_key_column'] = 'MY_KEY';
+$config['rest_key_column'] = '';
 
 /*
 |--------------------------------------------------------------------------
