@@ -1,28 +1,28 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Submenu extends MY_Controller
+class Menu extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct(); {
-            $this->load->model('Submenu_model', 'submenu');
+            $this->load->model('Menu_model', 'menu');
         }
     }
 
     public function index_get()
     {
-        $id = $this->get('MENU_ID_LEVEL2');
+        $id = $this->get('MENU_ID_LEVEL1');
         if ($id === null) {
-            $submenu = $this->submenu->getSubMenu();
+            $menu = $this->menu->getMenu();
         } else {
-            $submenu = $this->submenu->getSubMenu($id);
+            $menu = $this->menu->getMenu($id);
         }
 
-        if ($submenu) {
+        if ($menu) {
             $this->response([
                 'status' => true,
-                'data' => $submenu,
+                'data' => $menu,
             ], 200);
         } else {
             $this->response([
@@ -41,7 +41,7 @@ class Submenu extends MY_Controller
             'STATUS' => $this->input->post('STATUS'),
         ];
 
-        if ($this->submenu->addSubMenu($data) > 0) {
+        if ($this->menu->addMenu($data) > 0) {
             $this->response([
                 'status' => true,
                 'data' => $data,
@@ -57,14 +57,13 @@ class Submenu extends MY_Controller
 
     public function index_put()
     {
-        $id = $this->put('MENU_ID_LEVEL2');
+        $id = $this->put('MENU_ID_LEVEL1');
         $data = [
-            'MENU_ID_LEVEL1' => $this->put('MENU_ID_LEVEL1'),
             'MENU_NAME' => $this->put('MENU_NAME'),
             'MENU_CAPTION' => $this->put('MENU_CAPTION'),
             'STATUS' => $this->put('STATUS'),
         ];
-        if ($this->submenu->editSubMenu($data, $id) > 0) {
+        if ($this->menu->editMenu($data, $id) > 0) {
             $this->response([
                 'status' => true,
                 'message' => $this->lang->line('put')
@@ -79,7 +78,7 @@ class Submenu extends MY_Controller
 
     public function index_delete()
     {
-        $id = $this->delete('MENU_ID_LEVEL2');
+        $id = $this->delete('MENU_ID_LEVEL1');
 
         if ($id === null) {
             $this->response([
@@ -87,7 +86,7 @@ class Submenu extends MY_Controller
                 'message' => $this->lang->line('null'),
             ], 400);
         } else {
-            if ($this->submenu->deleteSubMenu($id) > 0) {
+            if ($this->menu->deleteMenu($id) > 0) {
                 $this->response([
                     'status' => true,
                     'id' => $id,
