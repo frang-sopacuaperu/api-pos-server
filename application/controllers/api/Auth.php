@@ -59,12 +59,12 @@ class Auth extends REST_Controller
                 'status' => true,
                 'data' => $data,
                 'message' => $this->lang->line('post')
-            ], REST_Controller::HTTP_CREATED);
+            ], 200);
         } else {
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], 200);
         }
     }
 

@@ -66,10 +66,4 @@ class MY_Controller extends REST_Controller
             EOD;
         return $privateKey;
     }
-
-    // private function generate_api_token()
-    // {
-    //     $length = '30';
-    //     $token = bin2hex(random_bytes($length));
-    // }
 }
