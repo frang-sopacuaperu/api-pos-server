@@ -28,7 +28,7 @@ class Customer extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('id'),
-            ], 404);
+            ], 200);
         }
     }
 
@@ -64,7 +64,7 @@ class Customer extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], 400);
+            ], 200);
         }
     }
 
@@ -94,7 +94,7 @@ class Customer extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->customer->editCustomer($data, $kode)) {
                 $this->response([
@@ -106,7 +106,7 @@ class Customer extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('fail-put'),
-                ], 400);
+                ], 200);
             }
         }
     }
@@ -119,7 +119,7 @@ class Customer extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->customer->deleteCustomer($kode)) {
                 $this->response([
@@ -130,7 +130,7 @@ class Customer extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('id'),
-                ], 400);
+                ], 200);
             }
         }
     }

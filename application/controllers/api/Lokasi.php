@@ -50,7 +50,7 @@ class Lokasi extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], 400);
+            ], 200);
         }
     }
 
@@ -66,7 +66,7 @@ class Lokasi extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->lokasi->editLokasi($data, $kode)) {
                 $this->response([
@@ -78,7 +78,7 @@ class Lokasi extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('fail-put'),
-                ], 400);
+                ], 200);
             }
         }
     }
@@ -91,7 +91,7 @@ class Lokasi extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->lokasi->deleteLokasi($kode)) {
                 $this->response([
@@ -102,7 +102,7 @@ class Lokasi extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('id'),
-                ], 400);
+                ], 200);
             }
         }
     }

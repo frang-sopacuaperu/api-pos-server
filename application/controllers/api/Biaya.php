@@ -29,7 +29,7 @@ class Biaya extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('id'),
-            ], 404);
+            ], 200);
         }
     }
 
@@ -51,7 +51,7 @@ class Biaya extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], 400);
+            ], 200);
         }
     }
 
@@ -67,7 +67,7 @@ class Biaya extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->biaya->editBiaya($data, $kode)) {
                 $this->response([
@@ -79,7 +79,7 @@ class Biaya extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('fail-put'),
-                ], 400);
+                ], 200);
             }
         }
     }
@@ -92,7 +92,7 @@ class Biaya extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->biaya->deleteBiaya($kode)) {
                 $this->response([
@@ -103,7 +103,7 @@ class Biaya extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('id'),
-                ], 400);
+                ], 200);
             }
         }
     }

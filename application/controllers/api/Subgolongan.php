@@ -28,7 +28,7 @@ class SubGolongan extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('id'),
-            ], 404);
+            ], 200);
         }
     }
 
@@ -49,7 +49,7 @@ class SubGolongan extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], 400);
+            ], 200);
         }
     }
 
@@ -64,7 +64,7 @@ class SubGolongan extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->subgolongan->editSubGolongan($data, $kode)) {
                 $this->response([
@@ -76,7 +76,7 @@ class SubGolongan extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('fail-put'),
-                ], 400);
+                ], 200);
             }
         }
     }
@@ -89,7 +89,7 @@ class SubGolongan extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
             if ($this->subgolongan->deleteSubGolongan($kode)) {
                 $this->response([
@@ -100,7 +100,7 @@ class SubGolongan extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('id'),
-                ], 400);
+                ], 200);
             }
         }
     }
