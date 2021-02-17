@@ -10,7 +10,12 @@ class Supplier_model extends CI_Model
     public function getSupplier($kode = null)
     {
         if ($kode === null) {
-            return $this->db->get('supplier')->result_array();
+            $query = "SELECT `supplier`.*, `wilayah`.`KETERANGAN`
+                      FROM `supplier`
+                      JOIN `wilayah` ON `supplier`.`WILAYAH_ID` = `wilayah`.`KODE`
+            ";
+
+            return $this->db->query($query)->result_array();
         } else {
             return $this->db->get_where('supplier', ['KODE' => $kode])->result_array();
         }
