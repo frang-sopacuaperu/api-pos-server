@@ -10,7 +10,13 @@ class Barang_model extends CI_Model
     public function getBarang($kode = null)
     {
         if ($kode === null) {
-            return $this->db->get('barang')->result_array();
+            $query = "SELECT `barang`.*, `golongan`.`KETERANGAN` as `ket_gol`, `sub_golongan`.`KETERANGAN` as `ket_subgol`
+                      FROM `barang`
+                      JOIN `golongan` ON `barang`.`GOLONGAN_ID` = `golongan`.`KODE`
+                      JOIN `sub_golongan` ON `barang`.`SUB_GOLONGAN_ID` = `sub_golongan`.`KODE`
+            ";
+
+            return $this->db->query($query)->result_array();
         } else {
             return $this->db->get_where('barang', ['KODE' => $kode])->result_array();
         }

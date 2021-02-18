@@ -12,7 +12,7 @@ class Multiprice_model extends CI_Model
         if ($id === null) {
             return $this->db->get('multi_price')->result_array();
         } else {
-            return $this->db->get_where('multi_price', ['BARANG_ID' => $id])->result_array();
+            return $this->db->get_where('multi_price', ['KODE' => $id])->result_array();
         }
     }
 
@@ -24,13 +24,13 @@ class Multiprice_model extends CI_Model
 
     public function editMultiprice($data, $id)
     {
-        $this->db->update('multi_price', $data, ['BARANG_ID' => $id]);
+        $this->db->update('multi_price', $data, ['KODE' => $id]);
         return $this->db->affected_rows();
     }
 
     public function deleteMultiprice($id)
     {
-        $this->db->delete('multi_price', ['BARANG_ID' => $id]);
+        $this->db->delete('multi_price', ['KODE' => $id]);
         return $this->db->affected_rows();
     }
 }

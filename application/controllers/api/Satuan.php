@@ -1,28 +1,28 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Multiprice extends MY_Controller
+class Satuan extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct(); {
-            $this->load->model('Multiprice_model', 'multiprice');
+            $this->load->model('Satuan_model', 'satuan');
         }
     }
 
     public function index_get()
     {
-        $id = $this->get('KODE');
-        if ($id === null) {
-            $multiprice = $this->multiprice->getMultiprice();
+        $kode = $this->get('KODE');
+        if ($kode === null) {
+            $satuan = $this->satuan->getSatuan();
         } else {
-            $multiprice = $this->multiprice->getMultiprice($id);
+            $satuan = $this->satuan->getSatuan($kode);
         }
 
-        if ($multiprice) {
+        if ($satuan) {
             $this->response([
                 'status' => true,
-                'data' => $multiprice,
+                'data' => $satuan,
             ], 200);
         } else {
             $this->response([
@@ -36,15 +36,11 @@ class Multiprice extends MY_Controller
     {
         $data = [
             'KODE' => $this->input->post('KODE'),
-            'KODE_SATUAN' => $this->input->post('KODE_SATUAN'),
-            'BARANG_ID' => $this->input->post('BARANG_ID'),
-            'HARGA_KE' => $this->input->post('HARGA_KE'),
-            'JUMLAH_R1' => $this->input->post('JUMLAH_R1'),
-            'JUMLAH_R2' => $this->input->post('JUMLAH_R2'),
-            'HARGA_JUAL' => $this->input->post('HARGA_JUAL'),
+            'NAMA' => $this->input->post('NAMA'),
+            'KONVERSI' => $this->input->post('KONVERSI'),
         ];
 
-        if ($this->multiprice->addMultiprice($data) > 0) {
+        if ($this->satuan->addSatuan($data) > 0) {
             $this->response([
                 'status' => true,
                 'data' => $data,
@@ -54,29 +50,25 @@ class Multiprice extends MY_Controller
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('fail'),
-            ], 400);
+            ], 200);
         }
     }
 
     public function index_put()
     {
-        $id = $this->put('KODE');
+        $kode = $this->put('KODE');
         $data = [
-            'KODE_SATUAN' => $this->input->post('KODE_SATUAN'),
-            'BARANG_ID' => $this->input->post('BARANG_ID'),
-            'HARGA_KE' => $this->input->post('HARGA_KE'),
-            'JUMLAH_R1' => $this->input->post('JUMLAH_R1'),
-            'JUMLAH_R2' => $this->input->post('JUMLAH_R2'),
-            'HARGA_JUAL' => $this->input->post('HARGA_JUAL'),
+            'NAMA' => $this->input->post('NAMA'),
+            'KONVERSI' => $this->input->post('KONVERSI'),
         ];
 
-        if ($id === null) {
+        if ($kode === null) {
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
-            if ($this->multiprice->editMultiprice($data, $id)) {
+            if ($this->satuan->editSatuan($data, $kode)) {
                 $this->response([
                     'status' => true,
                     'data' => $data,
@@ -85,23 +77,23 @@ class Multiprice extends MY_Controller
             } else {
                 $this->response([
                     'status' => false,
-                    'message' => $this->lang->line('delete'),
-                ], 400);
+                    'message' => $this->lang->line('fail-put'),
+                ], 200);
             }
         }
     }
 
     public function index_delete()
     {
-        $id = $this->delete('KODE');
+        $kode = $this->delete('KODE');
 
-        if ($id === null) {
+        if ($kode === null) {
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
-            ], 400);
+            ], 200);
         } else {
-            if ($this->multiprice->deleteMultiprice($id)) {
+            if ($this->satuan->deleteSatuan($kode)) {
                 $this->response([
                     'status' => true,
                     'message' => $this->lang->line('delete')
@@ -110,7 +102,7 @@ class Multiprice extends MY_Controller
                 $this->response([
                     'status' => false,
                     'message' => $this->lang->line('id'),
-                ], 400);
+                ], 200);
             }
         }
     }
