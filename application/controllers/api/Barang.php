@@ -61,10 +61,19 @@ class Barang extends MY_Controller
             'MARGIN' => $this->input->post('MARGIN'),
         ];
 
-        if ($this->barang->addBarang($data) > 0) {
+        $data2 = [
+            'KODE_SATUAN' => 1,
+            'BARANG_ID' => $this->input->post('BARANG_ID'),
+            'HARGA_KE' => 1,
+            'JUMLAH_R1' => 0,
+            'JUMLAH_R2' => 0,
+            'HARGA_JUAL' => 0,
+        ];
+
+        if ($this->barang->addBarang($data, $data2) > 0) {
             $this->response([
                 'status' => true,
-                'data' => $data,
+                'data' => $data, $data2,
                 'message' => $this->lang->line('post')
             ], 201);
         } else {
