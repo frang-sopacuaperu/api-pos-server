@@ -62,12 +62,12 @@ class Multiprice extends MY_Controller
     {
         $id = $this->put('KODE');
         $data = [
-            'KODE_SATUAN' => $this->input->post('KODE_SATUAN'),
-            'BARANG_ID' => $this->input->post('BARANG_ID'),
-            'HARGA_KE' => $this->input->post('HARGA_KE'),
-            'JUMLAH_R1' => $this->input->post('JUMLAH_R1'),
-            'JUMLAH_R2' => $this->input->post('JUMLAH_R2'),
-            'HARGA_JUAL' => $this->input->post('HARGA_JUAL'),
+            'KODE_SATUAN' => $this->put('KODE_SATUAN'),
+            'BARANG_ID' => $this->put('BARANG_ID'),
+            'HARGA_KE' => $this->put('HARGA_KE'),
+            'JUMLAH_R1' => $this->put('JUMLAH_R1'),
+            'JUMLAH_R2' => $this->put('JUMLAH_R2'),
+            'HARGA_JUAL' => $this->put('HARGA_JUAL'),
         ];
 
         if ($id === null) {

@@ -58,8 +58,8 @@ class Satuan extends MY_Controller
     {
         $kode = $this->put('KODE');
         $data = [
-            'NAMA' => $this->input->post('NAMA'),
-            'KONVERSI' => $this->input->post('KONVERSI'),
+            'NAMA' => $this->put('NAMA'),
+            'KONVERSI' => $this->put('KONVERSI'),
         ];
 
         if ($kode === null) {
