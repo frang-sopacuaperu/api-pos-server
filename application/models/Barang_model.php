@@ -29,20 +29,11 @@ class Barang_model extends CI_Model
         $this->db->insert('barang', $data);
 
         // get kode barang
-        $barang_id = $this->db->insert_id();
+        $barang_id = $data['KODE'];
 
-        $result = array();
-        foreach ($data2 as $key => $val) {
-            $result[] = array(
-                'BARANG_ID' => $barang_id,
-                'KODE' => $_POST['multi_price'][$key],
-            );
-        }
-
-        $this->db->insert_batch('multi_price', $result);
-
+        $this->db->insert_batch('multi_price', $data2);
+        return $this->getBarang($barang_id);
         // return $this->db->affected_rows();
-        // this->get->barang
     }
 
     public function editBarang($data, $kode)

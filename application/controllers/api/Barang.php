@@ -61,21 +61,29 @@ class Barang extends MY_Controller
             'MARGIN' => $this->input->post('MARGIN'),
         ];
 
-        $data2 = [
-            'KODE_SATUAN' => 1,
-            'BARANG_ID' => $this->input->post('BARANG_ID'),
-            'HARGA_KE' => 1,
-            'JUMLAH_R1' => 0,
-            'JUMLAH_R2' => 0,
-            'HARGA_JUAL' => 0,
-        ];
+        $kode_satuan = $this->input->post('KODE_SATUAN');
+        $harga_jual = $this->input->post('HARGA_JUAL');
+        $harga_ke = 1;
+        $jumlah_r1 = $this->input->post('JUMLAH_R1');
+        $jumlah_r2 = $this->input->post('JUMLAH_R2');
+        $data2 = array();
+        foreach ($harga_jual as $key => $val) {
+            $data2[] = array(
+                'BARANG_ID' => $data['KODE'],
+                'KODE_SATUAN' =>   $kode_satuan[$key],
+                'HARGA_KE' =>   $harga_ke,
+                'JUMLAH_R1' =>   $jumlah_r1[$key],
+                'JUMLAH_R2' =>   $jumlah_r2[$key],
+                'HARGA_JUAL' =>   $harga_jual[$key],
+            );
+        }
 
-        if ($this->barang->addBarang($data, $data2) > 0) {
+        if ($this->barang->addBarang($data, $data2)) {
             $this->response([
                 'status' => true,
-                'data' => $data, $data2,
+                'data' => $data,
                 'message' => $this->lang->line('post')
-            ], 201);
+            ], 200);
         } else {
             $this->response([
                 'status' => false,
