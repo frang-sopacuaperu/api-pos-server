@@ -32,14 +32,21 @@ class Barang_model extends CI_Model
         $barang_id = $data['KODE'];
 
         $this->db->insert_batch('multi_price', $data2);
+
         return $this->getBarang($barang_id);
         // return $this->db->affected_rows();
     }
 
-    public function editBarang($data, $kode)
+    public function editBarang($data, $data2, $kode)
     {
         $this->db->update('barang', $data, ['KODE' => $kode]);
-        return $this->db->affected_rows();
+
+        $barang_id = $data['KODE'];
+
+        $this->db->update_batch('multi_price', $data2);
+
+        return $this->getBarang($barang_id);
+        // return $this->db->affected_rows();
     }
 
     public function deleteBarang($kode)

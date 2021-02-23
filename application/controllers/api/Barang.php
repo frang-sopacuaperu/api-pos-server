@@ -121,13 +121,29 @@ class Barang extends MY_Controller
             'MARGIN' => $this->put('MARGIN'),
         ];
 
+        $kode_satuan = $this->put('KODE_SATUAN');
+        $harga_jual = $this->put('HARGA_JUAL');
+        $harga_ke = 1;
+        $jumlah_r1 = $this->put('JUMLAH_R1');
+        $jumlah_r2 = $this->put('JUMLAH_R2');
+        $data2 = array();
+        foreach ($harga_jual as $key => $val) {
+            $data2[] = array(
+                'KODE_SATUAN' =>   $kode_satuan[$key],
+                'HARGA_KE' =>   $harga_ke,
+                'JUMLAH_R1' =>   $jumlah_r1[$key],
+                'JUMLAH_R2' =>   $jumlah_r2[$key],
+                'HARGA_JUAL' =>   $harga_jual[$key],
+            );
+        }
+
         if ($kode === null) {
             $this->response([
                 'status' => false,
                 'message' => $this->lang->line('null'),
             ], 200);
         } else {
-            if ($this->barang->editBarang($data, $kode)) {
+            if ($this->barang->editBarang($data, $data2, $kode)) {
                 $this->response([
                     'status' => true,
                     'data' => $data,

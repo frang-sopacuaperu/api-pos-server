@@ -91,7 +91,7 @@ class Auth extends REST_Controller
                     $issuer_claim = "THE_CLAIM"; // this can be the servername. Example: https://domain.com
                     $audience_claim = "THE_AUDIENCE";
                     $issuedat_claim = time(); // issued at
-                    $notbefore_claim = $issuedat_claim + 10; //not before in seconds
+                    $notbefore_claim = $issuedat_claim; //not before in seconds
                     $expire_claim = $issuedat_claim + 3600; // expire time in seconds
                     $token = array(
                         "iss" => $issuer_claim,
